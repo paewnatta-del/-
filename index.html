@@ -4,272 +4,348 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แบบประเมินเส้นฟอกไตด้วยตนเอง</title>
+    <!-- นำเข้าฟอนต์ Prompt เพื่อความทันสมัย -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #E3F2FD; /* สีฟ้าอ่อน */
-            --secondary-color: #F1F8E9; /* สีเขียวพาสเทล */
-            --bg-color: #FAFAFA;
-            --text-color: #333333;
-            --border-color: #B0BEC5;
-            --red-alert: #FFCDD2;
-            --yellow-alert: #FFF9C4;
-            --green-alert: #C8E6C9;
+            --primary: #4F46E5; /* สีน้ำเงินอมม่วงดูตื่นเต้นและทันสมัย */
+            --primary-hover: #4338CA;
+            --secondary: #10B981; /* สีเขียวสดใส */
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #1F2937;
+            --text-muted: #6B7280;
+            --border: #D1D5DB;
         }
 
         body {
-            font-family: 'Sarabun', 'Prompt', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Prompt', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-dark);
             margin: 0;
             padding: 20px;
-            font-size: 18px; /* ตัวอักษรขนาดใหญ่เพื่อให้อ่านง่าย */
-            line-height: 1.6;
+            font-size: 16px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #FFFFFF;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 1100px;
+            background: var(--card-bg);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            backdrop-filter: blur(10px);
         }
 
-        h1, h2 {
+        .header {
             text-align: center;
-            color: #1565C0;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 32px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin: 0;
+        }
+
+        /* แบ่ง Layout เป็น 2 คอลัมน์ (ซ้าย-ขวา) */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+            margin-top: 0;
             margin-bottom: 20px;
         }
 
-        h1 { font-size: 28px; }
-        h2 { 
-            font-size: 22px; 
-            margin-top: 40px; 
-            border-bottom: 2px solid var(--primary-color); 
-            padding-bottom: 10px; 
-            text-align: left;
-        }
-
         .form-group {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
         }
 
         input[type="text"],
         input[type="number"],
         select {
             width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 16px;
+            font-family: 'Prompt', sans-serif;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             box-sizing: border-box;
-            background-color: #FFFFFF;
+            background-color: #F9FAFB;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            background-color: #FFF;
+        }
+
+        /* การประเมินแบ่งเป็น Grid 2x2 */
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .assessment-card {
+            background: #F3F4F6;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #E5E7EB;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .assessment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.1);
+            border-color: #C7D2FE;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
         }
 
         .radio-group {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 8px;
         }
 
         .radio-label {
             display: flex;
             align-items: center;
-            padding: 15px;
-            background-color: var(--primary-color);
+            padding: 10px;
+            background-color: #FFF;
+            border: 1px solid #D1D5DB;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s;
-            font-weight: normal;
+            transition: all 0.2s;
+            font-size: 15px;
             margin: 0;
         }
 
-        .radio-label input[type="radio"] {
-            margin-right: 15px;
-            transform: scale(1.5);
-        }
-
         .radio-label:hover {
-            background-color: #BBDEFB;
+            border-color: var(--primary);
+            background-color: #EEF2FF;
         }
 
-        .image-placeholder {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            margin: 0 auto 15px auto;
-            display: block;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+        .radio-label input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            accent-color: var(--primary);
         }
 
         .btn-submit {
-            display: block;
+            grid-column: 1 / -1;
             width: 100%;
-            padding: 20px;
-            font-size: 22px;
-            font-weight: bold;
+            padding: 16px;
+            font-size: 20px;
+            font-weight: 600;
             color: #FFFFFF;
-            background-color: #1976D2;
+            background: linear-gradient(to right, #4F46E5, #3B82F6);
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            margin-top: 40px;
-            transition: background-color 0.3s;
+            margin-top: 30px;
+            transition: all 0.3s;
+            font-family: 'Prompt', sans-serif;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
         }
 
         .btn-submit:hover {
-            background-color: #1565C0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(to right, #4338CA, #2563EB);
         }
 
         #alertBox {
             display: none;
-            padding: 25px;
-            margin-top: 30px;
-            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 12px;
             text-align: center;
-            font-weight: bold;
-            font-size: 22px;
+            font-weight: 500;
+            font-size: 18px;
+            animation: slideIn 0.5s ease-out;
         }
 
-        .alert-red { background-color: var(--red-alert); color: #B71C1C; border: 2px solid #E53935; }
-        .alert-yellow { background-color: var(--yellow-alert); color: #F57F17; border: 2px solid #FBC02D; }
-        .alert-green { background-color: var(--green-alert); color: #1B5E20; border: 2px solid #43A047; }
-        
-        .number-large {
-            font-size: 24px !important;
-            text-align: center;
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .helper-text {
-            font-size: 16px; 
-            font-weight: normal; 
-            color: #666;
-            display: block;
-            margin-top: 5px;
+        .alert-red { background-color: #FEE2E2; color: #991B1B; border: 2px solid #EF4444; }
+        .alert-yellow { background-color: #FEF3C7; color: #92400E; border: 2px solid #F59E0B; }
+        .alert-green { background-color: #D1FAE5; color: #065F46; border: 2px solid #10B981; }
+
+        /* Responsive Design สำหรับมือถือ */
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; gap: 20px; }
+            .assessment-grid { grid-template-columns: 1fr; }
+            .container { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>แบบประเมินเส้นฟอกไตด้วยตนเอง</h1>
-    <p style="text-align: center; color: #666; font-size: 18px;">กรุณากรอกข้อมูลและประเมินอาการตามความเป็นจริง เพื่อสุขภาพที่ดีของท่านค่ะ</p>
+    <div class="header">
+        <h1>แบบประเมินเส้นฟอกไตด้วยตนเอง</h1>
+        <p>เพื่อสุขภาพที่ดีของท่าน กรุณาประเมินอาการตามความเป็นจริง</p>
+    </div>
 
     <form id="assessmentForm">
-        <h2>1. ข้อมูลทั่วไป</h2>
-        
-        <div class="form-group">
-            <label for="gender">เพศ</label>
-            <select id="gender" required>
-                <option value="">กรุณาเลือกเพศ...</option>
-                <option value="ชาย">ชาย</option>
-                <option value="หญิง">หญิง</option>
-            </select>
-        </div>
+        <div class="layout-grid">
+            
+            <!-- ส่วนที่ 1: ซ้าย (ข้อมูลทั่วไป) -->
+            <div class="left-panel">
+                <h2>📋 ข้อมูลทั่วไป</h2>
+                
+                <div class="form-group">
+                    <label for="gender">เพศ</label>
+                    <select id="gender" required>
+                        <option value="">เลือกเพศ...</option>
+                        <option value="ชาย">ชาย</option>
+                        <option value="หญิง">หญิง</option>
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label for="age">อายุ (ปี)</label>
-            <input type="number" id="age" min="1" max="120" required placeholder="เช่น 60">
-        </div>
+                <div class="form-group">
+                    <label for="age">อายุ (ปี)</label>
+                    <input type="number" id="age" min="1" max="120" required placeholder="ระบุอายุ">
+                </div>
 
-        <div class="form-group">
-            <label for="disease">โรคประจำตัว</label>
-            <input type="text" id="disease" placeholder="เช่น เบาหวาน, ความดันโลหิตสูง" required>
-        </div>
+                <div class="form-group">
+                    <label for="location">ตำแหน่งเส้นฟอกไต</label>
+                    <input type="text" id="location" placeholder="เช่น แขนซ้ายท่อนล่าง" required>
+                </div>
 
-        <div class="form-group">
-            <label for="location">ตำแหน่งเส้นฟอกไต</label>
-            <input type="text" id="location" placeholder="เช่น แขนซ้ายท่อนล่าง" required>
-        </div>
+                <div class="form-group">
+                    <label for="doctor">แพทย์ผู้ดูแล</label>
+                    <select id="doctor" required>
+                        <option value="">เลือกแพทย์...</option>
+                        <option value="พญ.ณัฏฐวดี">พญ.ณัฏฐวดี</option>
+                        <option value="แพทย์อื่นๆ">แพทย์อื่นๆ</option>
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label for="doctor">ชื่อแพทย์ผู้ดูแล</label>
-            <input type="text" id="doctor" placeholder="ระบุชื่อแพทย์" required>
-        </div>
+                <div style="margin-top: 30px;">
+                    <h2>🩺 ค่าจากการฟอกไต</h2>
+                    <div class="form-group">
+                        <label for="bfr">BFR (ml/min) <span style="font-weight:normal; font-size:13px; color:#6B7280;">(เว้นว่างได้)</span></label>
+                        <input type="number" id="bfr" placeholder="ระบุตัวเลข (ถ้ามี)">
+                    </div>
 
-        <h2>2. การประเมินอาการประจำวัน</h2>
-
-        <div class="form-group">
-            <label>1) การคลำเสียงฟู่ (Thrill)</label>
-            <img src="https://via.placeholder.com/300x150?text=รูปตัวอย่างการคลำเส้น" alt="การคลำเสียงฟู่" class="image-placeholder">
-            <div class="radio-group">
-                <label class="radio-label"><input type="radio" name="thrill" value="คลำเจอชัดเจน" required> คลำเจอชัดเจน (ปกติ)</label>
-                <label class="radio-label"><input type="radio" name="thrill" value="เบาลง"> เบาลง</label>
-                <label class="radio-label"><input type="radio" name="thrill" value="คลำไม่ได้เลย"> คลำไม่ได้เลย</label>
+                    <div class="form-group">
+                        <label for="vp">VP (mmHg) <span style="font-weight:normal; font-size:13px; color:#6B7280;">(เว้นว่างได้)</span></label>
+                        <input type="number" id="vp" placeholder="ระบุตัวเลข (ถ้ามี)">
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label>2) อาการติดเชื้อ</label>
-            <img src="https://via.placeholder.com/300x150?text=รูปตัวอย่างอาการติดเชื้อ" alt="อาการติดเชื้อ" class="image-placeholder">
-            <div class="radio-group">
-                <label class="radio-label"><input type="radio" name="infection" value="ไม่มีอาการ" required> ไม่มีอาการ (ปกติ)</label>
-                <label class="radio-label"><input type="radio" name="infection" value="ปวดบวมแดงมีไข้"> ปวดบวมแดงมีไข้</label>
+            <!-- ส่วนที่ 2: ขวา (การประเมินอาการ) -->
+            <div class="right-panel">
+                <h2>🔍 การประเมินอาการประจำวัน</h2>
+                
+                <div class="assessment-grid">
+                    
+                    <div class="assessment-card">
+                        <label>1) การคลำเสียงฟู่ (Thrill)</label>
+                        <img src="https://via.placeholder.com/400x200?text=การคลำเสียงฟู่" alt="การคลำเสียงฟู่" class="image-placeholder">
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="thrill" value="คลำเจอชัดเจน" required> คลำเจอชัดเจน (ปกติ)</label>
+                            <label class="radio-label"><input type="radio" name="thrill" value="เบาลง"> เบาลง</label>
+                            <label class="radio-label"><input type="radio" name="thrill" value="คลำไม่ได้เลย"> คลำไม่ได้เลย</label>
+                        </div>
+                    </div>
+
+                    <div class="assessment-card">
+                        <label>2) อาการติดเชื้อ</label>
+                        <img src="https://via.placeholder.com/400x200?text=อาการติดเชื้อ" alt="อาการติดเชื้อ" class="image-placeholder">
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="infection" value="ไม่มีอาการ" required> ไม่มีอาการ (ปกติ)</label>
+                            <label class="radio-label"><input type="radio" name="infection" value="ปวดบวมแดงมีไข้"> ปวดบวมแดงมีไข้</label>
+                        </div>
+                    </div>
+
+                    <div class="assessment-card">
+                        <label>3) เลือดออกหลังดึงเข็ม</label>
+                        <img src="https://via.placeholder.com/400x200?text=การเลือดออก" alt="การเลือดออกหลังดึงเข็ม" class="image-placeholder">
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="bleeding" value="ปกติ" required> ปกติ</label>
+                            <label class="radio-label"><input type="radio" name="bleeding" value="กดหยุดยากใช้เวลานาน"> หยุดยากใช้เวลานาน</label>
+                            <label class="radio-label"><input type="radio" name="bleeding" value="เลือดออกมากทะลักพลาสเตอร์"> ทะลักพลาสเตอร์</label>
+                        </div>
+                    </div>
+
+                    <div class="assessment-card">
+                        <label>4) การเจาะเส้น (Cannulation)</label>
+                        <img src="https://via.placeholder.com/400x200?text=การเจาะเส้น" alt="การเจาะเส้น" class="image-placeholder">
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" name="cannulation" value="เจาะได้ปกติ" required> เจาะได้ปกติ</label>
+                            <label class="radio-label"><input type="radio" name="cannulation" value="เจาะยาก แทงเข็มมากกว่า 3 ครั้ง"> แทงเข็มมากกว่า 3 ครั้ง</label>
+                            <label class="radio-label"><input type="radio" name="cannulation" value="ไม่สามารถฟอกได้เลย"> ฟอกไม่ได้เลย</label>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label>3) การเลือดออกหลังดึงเข็ม</label>
-            <img src="https://via.placeholder.com/300x150?text=รูปตัวอย่างการกดเลือด" alt="การเลือดออกหลังดึงเข็ม" class="image-placeholder">
-            <div class="radio-group">
-                <label class="radio-label"><input type="radio" name="bleeding" value="ปกติ" required> ปกติ</label>
-                <label class="radio-label"><input type="radio" name="bleeding" value="กดหยุดยากใช้เวลานาน"> กดหยุดยากใช้เวลานาน</label>
-                <label class="radio-label"><input type="radio" name="bleeding" value="เลือดออกมากทะลักพลาสเตอร์"> เลือดออกมากทะลักพลาสเตอร์</label>
-            </div>
+            <!-- ปุ่ม Submit ครอบคลุมทั้งสองคอลัมน์ด้านล่างสุด -->
+            <button type="submit" class="btn-submit">🚀 บันทึกและส่งผลการประเมิน</button>
         </div>
-
-        <div class="form-group">
-            <label>4) การเจาะเส้น (Cannulation)</label>
-            <img src="https://via.placeholder.com/300x150?text=รูปตัวอย่างการเจาะเส้น" alt="การเจาะเส้น" class="image-placeholder">
-            <div class="radio-group">
-                <label class="radio-label"><input type="radio" name="cannulation" value="เจาะได้ปกติ" required> เจาะได้ปกติ</label>
-                <label class="radio-label"><input type="radio" name="cannulation" value="เจาะยาก แทงเข็มมากกว่า 3 ครั้ง"> เจาะยาก แทงเข็มมากกว่า 3 ครั้ง</label>
-                <label class="radio-label"><input type="radio" name="cannulation" value="ไม่สามารถฟอกได้เลย"> ไม่สามารถฟอกได้เลย</label>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="bfr">5) ค่า BFR (Blood Flow Rate : ml/min) <span class="helper-text">หากไม่ทราบสามารถเว้นว่างได้ค่ะ</span></label>
-            <input type="number" id="bfr" class="number-large" placeholder="ระบุตัวเลข (ถ้ามี)">
-        </div>
-
-        <div class="form-group">
-            <label for="vp">6) ค่า VP (Venous Pressure : mmHg) <span class="helper-text">หากไม่ทราบสามารถเว้นว่างได้ค่ะ</span></label>
-            <input type="number" id="vp" class="number-large" placeholder="ระบุตัวเลข (ถ้ามี)">
-        </div>
-
-        <button type="submit" class="btn-submit">ส่งผลการประเมิน</button>
     </form>
 
     <div id="alertBox"></div>
 </div>
 
 <script>
-    // -------------------------------------------------------------
-    // URL ของ Google Apps Script Webhook ที่ Deploy เป็น Web App
-    // -------------------------------------------------------------
-    const GAS_WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEBHOOK_URL"; 
+    const GAS_WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEBHOOK_URL"; // นำ URL จาก GAS มาใส่ที่นี่
 
     document.getElementById('assessmentForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // รวบรวมข้อมูลทั่วไปของผู้ป่วย
+        // รวบรวมข้อมูลผู้ป่วย
         const patientData = {
             gender: document.getElementById('gender').value,
             age: document.getElementById('age').value,
-            disease: document.getElementById('disease').value,
             location: document.getElementById('location').value,
             doctor: document.getElementById('doctor').value
         };
 
-        // รวบรวมข้อมูลการประเมินอาการ
+        // รวบรวมข้อมูลอาการ
         const thrill = document.querySelector('input[name="thrill"]:checked').value;
         const infection = document.querySelector('input[name="infection"]:checked').value;
         const bleeding = document.querySelector('input[name="bleeding"]:checked').value;
@@ -281,19 +357,18 @@
         const bfr = bfrValue ? parseInt(bfrValue) : null;
         const vp = vpValue ? parseInt(vpValue) : null;
 
-        // เริ่มต้นการประเมิน Triage
+        // การประเมิน (Triage)
         let triageLevel = "Green"; 
         let abnormalSymptoms = [];
 
-        // เงื่อนไขระดับสีแดง (Red Flag)
+        // เงื่อนไขสีแดง
         if (thrill === "คลำไม่ได้เลย") { abnormalSymptoms.push("Thrill: คลำไม่ได้เลย"); triageLevel = "Red"; }
         if (infection === "ปวดบวมแดงมีไข้") { abnormalSymptoms.push("อาการติดเชื้อ: ปวดบวมแดงมีไข้"); triageLevel = "Red"; }
         if (bleeding === "เลือดออกมากทะลักพลาสเตอร์") { abnormalSymptoms.push("การเลือดออก: เลือดออกมากทะลักพลาสเตอร์"); triageLevel = "Red"; }
         if (cannulation === "ไม่สามารถฟอกได้เลย") { abnormalSymptoms.push("การเจาะเส้น: ไม่สามารถฟอกได้เลย"); triageLevel = "Red"; }
 
-        // เงื่อนไขระดับสีเหลือง (Yellow Flag)
+        // เงื่อนไขสีเหลือง
         let isYellowConditionFound = false;
-        
         if (thrill === "เบาลง") { abnormalSymptoms.push("Thrill: เบาลง"); isYellowConditionFound = true; }
         if (bleeding === "กดหยุดยากใช้เวลานาน") { abnormalSymptoms.push("การเลือดออก: กดหยุดยากใช้เวลานาน"); isYellowConditionFound = true; }
         if (cannulation === "เจาะยาก แทงเข็มมากกว่า 3 ครั้ง") { abnormalSymptoms.push("การเจาะเส้น: เจาะยาก แทงเข็มมากกว่า 3 ครั้ง"); isYellowConditionFound = true; }
@@ -304,49 +379,45 @@
             triageLevel = "Yellow";
         }
 
-        // จัดการแสดงผล Alert Box
+        // จัดการ UI
         const alertBox = document.getElementById('alertBox');
         alertBox.style.display = 'block';
         alertBox.className = ''; 
 
         if (triageLevel === "Green") {
             alertBox.classList.add('alert-green');
-            alertBox.innerHTML = "✅ ปกติ<br><span style='font-size:18px; font-weight:normal;'>อาการของเส้นฟอกไตอยู่ในเกณฑ์ดีเยี่ยมค่ะ ขอให้รักษาสุขภาพต่อไปนะคะ</span>";
+            alertBox.innerHTML = "✨ <b>ปกติสมบูรณ์!</b><br>เส้นฟอกไตของคุณอยู่ในเกณฑ์ดีเยี่ยม ขอให้รักษาสุขภาพต่อไปนะคะ";
         } else {
-            // สร้างข้อมูลสำหรับส่งไป Backend
             const payload = {
                 patient: patientData,
                 triage: triageLevel,
                 symptoms: abnormalSymptoms
             };
 
-            // แสดงข้อความแจ้งเตือนบนหน้าจอ
             if (triageLevel === "Red") {
                 alertBox.classList.add('alert-red');
-                alertBox.innerHTML = "⚠️ พบอาการผิดปกติรุนแรง (ระดับสีแดง)<br><span style='font-size:18px; font-weight:normal;'>ระบบกำลังแจ้งเตือนไปยังแพทย์ผู้ดูแล กรุณารอรับการติดต่อกลับค่ะ</span>";
+                alertBox.innerHTML = "🚨 <b>พบอาการผิดปกติฉุกเฉิน (สีแดง)</b><br>ระบบได้ส่งข้อมูลแจ้งไปยังแพทย์ผู้ดูแล @paewnatta ทันที กรุณารอรับการติดต่อกลับค่ะ";
             } else if (triageLevel === "Yellow") {
                 alertBox.classList.add('alert-yellow');
-                alertBox.innerHTML = "⚠️ พบอาการผิดปกติที่ต้องเฝ้าระวัง (ระดับสีเหลือง)<br><span style='font-size:18px; font-weight:normal;'>ระบบกำลังแจ้งเตือนไปยังแพทย์ผู้ดูแลเพื่อพิจารณาอาการค่ะ</span>";
+                alertBox.innerHTML = "⚠️ <b>พบอาการที่ต้องเฝ้าระวัง (สีเหลือง)</b><br>ระบบได้ส่งข้อมูลเบื้องต้นให้แพทย์ทราบแล้วค่ะ";
             }
 
-            // ส่งข้อมูลไปยัง Google Apps Script
+            // ยิง API ไปที่ GAS
             fetch(GAS_WEBHOOK_URL, {
                 method: 'POST',
-                mode: 'no-cors', // บังคับใช้ no-cors ป้องกันปัญหา Cross-Origin
-                headers: {
-                    'Content-Type': 'text/plain' 
-                },
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(payload)
             }).then(() => {
-                console.log("ส่งข้อมูลสำเร็จ (no-cors mode)");
+                console.log("ส่งข้อมูลสำเร็จ");
             }).catch((error) => {
                 console.error("Error:", error);
-                alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้งค่ะ");
+                alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
             });
         }
         
-        // เลื่อนหน้าจอไปที่ Alert Box
-        alertBox.scrollIntoView({ behavior: 'smooth' });
+        // เลื่อนให้เห็นข้อความ
+        alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 </script>
 
